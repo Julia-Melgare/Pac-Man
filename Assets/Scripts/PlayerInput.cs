@@ -10,7 +10,7 @@ public class PlayerInput : MonoBehaviour
     {
         movement = gameObject.GetComponent<Movement>();
     }
-    private void Update()
+    protected virtual void Update()
     {
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -28,8 +28,5 @@ public class PlayerInput : MonoBehaviour
         {
             movement.SetDirection(Vector2.right);
         }
-
-        float angle = Mathf.Atan2(movement.direction.y, movement.direction.x);
-        gameObject.transform.rotation = Quaternion.AngleAxis(angle * Mathf.Rad2Deg, Vector3.forward);
     }
 }
