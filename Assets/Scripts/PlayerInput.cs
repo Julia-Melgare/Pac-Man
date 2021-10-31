@@ -29,4 +29,23 @@ public class PlayerInput : MonoBehaviour
             movement.SetDirection(Vector2.right);
         }
     }
+
+    public virtual void ButtonInput(string input)
+    {
+        switch (input)
+        {
+            case "up":
+                movement.SetDirection(Vector2.up);
+                break;
+            case "down":
+                movement.SetDirection(Vector2.down);
+                break;
+            case "left":
+                movement.SetDirection(Vector2.left);
+                break;
+            case "right":
+                movement.SetDirection(Vector2.right);
+                break;
+        }
+    }
 }

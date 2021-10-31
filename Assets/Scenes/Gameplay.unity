@@ -496,7 +496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 8
   speedMultiplier: 1
-  initialDirection: {x: 1, y: 0}
+  initialDirection: {x: -1, y: 0}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 2048
@@ -704,6 +704,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pinky
       objectReference: {fileID: 0}
+    - target: {fileID: 6266925017887380322, guid: bdb392f9b54597a4bbe63f4e262bc4b7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6266925017887380348, guid: bdb392f9b54597a4bbe63f4e262bc4b7,
         type: 3}
       propertyPath: m_RootOrder
@@ -817,7 +822,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1076494551
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3513,6 +3518,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Blinky
+      objectReference: {fileID: 0}
+    - target: {fileID: 7851732084744918580, guid: 6ee65e9c4deca554aa64dfcfeade3d8f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7851732084744918583, guid: 6ee65e9c4deca554aa64dfcfeade3d8f,
         type: 3}
@@ -10150,7 +10160,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1762902373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10203,6 +10213,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Clyde
+      objectReference: {fileID: 0}
+    - target: {fileID: 8816181968122644651, guid: 2a0ae8251c1300548bdcdaec08a606c1,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8816181968122644661, guid: 2a0ae8251c1300548bdcdaec08a606c1,
         type: 3}
@@ -10327,6 +10342,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Inky
+      objectReference: {fileID: 0}
+    - target: {fileID: 558996841074793396, guid: c270aced73de4eb4c8f5858bc766d0ed,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 558996841074793399, guid: c270aced73de4eb4c8f5858bc766d0ed,
         type: 3}

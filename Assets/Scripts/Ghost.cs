@@ -9,6 +9,7 @@ public class Ghost : MonoBehaviour
     public GhostFrightened frightened { get; private set; }
     public GhostBehaviour initialBehavior;
     public Transform target;
+    private bool playerControl = false;
 
     public int points = 200;
 
@@ -30,17 +31,32 @@ public class Ghost : MonoBehaviour
     {
         gameObject.SetActive(true);
         movement.ResetState();
-        frightened.Disable();
-        chase.Disable();
-        scatter.Enable();
-        if (home != initialBehavior)
+        if (!playerControl)
         {
-            home.Disable();
+            frightened.Disable();
+            chase.Disable();
+            scatter.Enable();
+            if (home != initialBehavior)
+            {
+                home.Disable();
+            }
+            if (initialBehavior != null)
+            {
+                initialBehavior.Enable();
+            }
         }
-        if (initialBehavior != null)
-        {
-            initialBehavior.Enable();
-        }
+        
+    }
+
+    public void EnablePlayerInput()
+    {
+        CancelInvoke();
+        Destroy(home);
+        Destroy(scatter);
+        Destroy(chase);
+        Destroy(frightened);
+        gameObject.GetComponent<PlayerInput>().enabled = true;
+        playerControl = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
