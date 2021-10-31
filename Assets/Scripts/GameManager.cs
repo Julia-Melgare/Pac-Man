@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,10 +16,16 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI scoreText;
     public Image[] livesCounterImages;
+    public TextMeshProUGUI waitingText;
+    public TextMeshProUGUI readyText;
+    public TextMeshProUGUI gameOverText;
+
+    public bool startedGame { get; private set; } = false;
 
     private void Start()
     {
-        NewGame();
+        waitingText.gameObject.SetActive(true);
+        Time.timeScale = 0f;
     }
 
     private void Update()
@@ -47,12 +54,13 @@ public class GameManager : MonoBehaviour
             pellet.gameObject.SetActive(true);
         }
 
-        ResetState();
+        StartCoroutine(StartReset());
         
     }
 
     private void ResetState()
     {
+        Time.timeScale = 1f;
         ResetGhostMultiplier();
         foreach (Ghost ghost in ghosts)
         {
@@ -68,8 +76,9 @@ public class GameManager : MonoBehaviour
         {
             ghost.gameObject.SetActive(false);
         }
-
         pacman.gameObject.SetActive(false);
+        gameOverText.gameObject.SetActive(true);
+        startedGame = false;
     }
 
     private void SetScore(int score)
@@ -95,7 +104,7 @@ public class GameManager : MonoBehaviour
         if (!HasRemainingPellets())
         {
             pacman.gameObject.SetActive(false);
-            Invoke(nameof(NewRound), 3f);
+            Invoke(nameof(NewRound), 4f);
         }
     }
 
@@ -124,11 +133,23 @@ public class GameManager : MonoBehaviour
         SetLives(lives - 1);
         if(lives > 0)
         {
-            Invoke(nameof(ResetState), 3f);
+            //Invoke(nameof(ResetState), 3f);
+            //TODO: start death anim coroutine and from there call startreset
+            StartCoroutine(StartReset());
         }
         else
         {
             GameOver();
+        }
+    }
+
+    public void PressedStartButton()
+    {
+        if (!startedGame)
+        {
+            startedGame = true;
+            waitingText.gameObject.SetActive(false);
+            NewGame();
         }
     }
 
@@ -148,5 +169,15 @@ public class GameManager : MonoBehaviour
     private void ResetGhostMultiplier()
     {
         ghostMultiplier = 1;
+    }
+
+    private IEnumerator StartReset()
+    {
+        Time.timeScale = 0f;
+        readyText.gameObject.SetActive(true);
+        //TODO: play sfx
+        yield return new WaitForSecondsRealtime(4f);//sfx duration
+        readyText.gameObject.SetActive(false);
+        ResetState();
     }
 }

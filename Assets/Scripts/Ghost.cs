@@ -54,7 +54,6 @@ public class Ghost : MonoBehaviour
         Destroy(home);
         Destroy(scatter);
         Destroy(chase);
-        Destroy(frightened);
         gameObject.GetComponent<PlayerInput>().enabled = true;
         playerControl = true;
     }

@@ -52,6 +52,7 @@ public class AirConsoleManager : MonoBehaviour
 
     void OnMessage(int from, JToken data)
     {
+        Debug.Log("message: " + data);
         if (players.ContainsKey(from) && data["element"] != null)
         {
             if(data["element"].ToString() == "dpad")
@@ -59,7 +60,14 @@ public class AirConsoleManager : MonoBehaviour
                 if (data["data"]["key"] != null)
                 {
                     players[from].ButtonInput(data["data"]["key"].ToString());
-                }   
+                }
+            }
+            else
+            {
+                if (data["element"].ToString().Contains("start"))
+                {
+                    gameManager.PressedStartButton();
+                }
             }
         }
     }

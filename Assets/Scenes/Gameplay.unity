@@ -1006,8 +1006,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ghosts:
   - {fileID: 1700145197}
-  - {fileID: 534238287}
   - {fileID: 655215608}
+  - {fileID: 534238287}
   - {fileID: 814369457}
   pacman: {fileID: 629996226}
   pellets: {fileID: 1288665964}
@@ -1015,6 +1015,9 @@ MonoBehaviour:
   livesCounterImages:
   - {fileID: 1388783059}
   - {fileID: 1073886669}
+  waitingText: {fileID: 1755929881}
+  readyText: {fileID: 1358162171}
+  gameOverText: {fileID: 145126095}
 --- !u!114 &814369457 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8816181968122644648, guid: 2a0ae8251c1300548bdcdaec08a606c1,
@@ -1052,7 +1055,7 @@ PrefabInstance:
     - target: {fileID: 6266925017887380348, guid: bdb392f9b54597a4bbe63f4e262bc4b7,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6266925017887380348, guid: bdb392f9b54597a4bbe63f4e262bc4b7,
         type: 3}
@@ -1250,7 +1253,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e37d83ebce05ad74683fd3228dde9e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  browserStartMode: 0
+  browserStartMode: 3
   controllerHtml: {fileID: 4900000, guid: 6475afc26d2c234488980d352f861e7f, type: 3}
   autoScaleCanvas: 1
   devGameId: 
@@ -11181,7 +11184,7 @@ PrefabInstance:
     - target: {fileID: 558996841074793386, guid: c270aced73de4eb4c8f5858bc766d0ed,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 558996841074793386, guid: c270aced73de4eb4c8f5858bc766d0ed,
         type: 3}
