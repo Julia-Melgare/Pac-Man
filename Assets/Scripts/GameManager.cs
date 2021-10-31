@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +12,9 @@ public class GameManager : MonoBehaviour
     public int lives { get; private set; }
 
     public int ghostMultiplier { get; private set; } = 1;
+
+    public TextMeshProUGUI scoreText;
+    public Image[] livesCounterImages;
 
     private void Start()
     {
@@ -28,6 +33,10 @@ public class GameManager : MonoBehaviour
     {
         SetScore(0);
         SetLives(3);
+        for(int i = 0; i < livesCounterImages.Length; i++)
+        {
+            livesCounterImages[i].enabled = true;
+        }
         NewRound();
     }
 
@@ -66,11 +75,16 @@ public class GameManager : MonoBehaviour
     private void SetScore(int score)
     {
         this.score = score;
+        scoreText.text = score.ToString();
     }
 
     private void SetLives(int lives)
     {
         this.lives = lives;
+        if(lives < 3 && lives > 0)
+        {
+            livesCounterImages[livesCounterImages.Length - lives].enabled = false;
+        }
     }
 
     public void PelletEaten(Pellet pellet)

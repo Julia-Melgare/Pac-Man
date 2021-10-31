@@ -9,7 +9,7 @@ public class Ghost : MonoBehaviour
     public GhostFrightened frightened { get; private set; }
     public GhostBehaviour initialBehavior;
     public Transform target;
-    private bool playerControl = false;
+    public bool playerControl { get; private set; } = false;
 
     public int points = 200;
 

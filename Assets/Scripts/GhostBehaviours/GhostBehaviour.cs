@@ -9,7 +9,6 @@ public abstract class GhostBehaviour : MonoBehaviour
     private void Awake()
     {
         ghost = gameObject.GetComponent<Ghost>();
-        this.enabled = false;
     }
 
     public void Enable()
