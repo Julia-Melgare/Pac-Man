@@ -141,7 +141,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &145126094
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7518,7 +7518,7 @@ Tilemap:
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 2147483649
+      m_AllTileFlags: 1
   - first: {x: 0, y: 1, z: 0}
     second:
       serializedVersion: 2
@@ -7528,7 +7528,7 @@ Tilemap:
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 2147483649
+      m_AllTileFlags: 1
   - first: {x: 1, y: 1, z: 0}
     second:
       serializedVersion: 2
@@ -10173,7 +10173,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: WAITING FOR P1 TO CONNECT...
+  m_text: PRESS 'START' TO PLAY
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6b5c02e7c47b87346b8de6478049c2ca, type: 2}
   m_sharedMaterial: {fileID: 8090003200825561363, guid: 6b5c02e7c47b87346b8de6478049c2ca,
