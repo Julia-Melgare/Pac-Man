@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GhostFrightened : GhostBehaviour
@@ -9,6 +10,21 @@ public class GhostFrightened : GhostBehaviour
 
     public bool eaten { get; private set; }
 
+    private void Update()
+    {
+        if (eaten)
+        {
+            float distanceHome = Vector3.Distance(ghost.transform.position, ghost.home.outside.position);
+            Debug.Log(gameObject.name + " - distance to home: " + distanceHome);
+            if(distanceHome <= 1.05f)
+            {
+                Debug.Log(gameObject.name + " arrived home");
+                StartCoroutine(EnterTransition());
+                Disable();                
+            }
+        }
+    }
+
     public override void Enable(float duration)
     {
         base.Enable(duration);
@@ -17,32 +33,34 @@ public class GhostFrightened : GhostBehaviour
         eyes.enabled = false;
         blue.enabled = true;
         flash.enabled = false;
+        eaten = false;
+        ghost.gameObject.layer = LayerMask.NameToLayer("Ghost");
 
         Invoke(nameof(Flash), duration / 2.0f);
     }
 
     public override void Disable()
     {
-        base.Disable();
-
+        eaten = false;
+        ghost.gameObject.layer = LayerMask.NameToLayer("Ghost");
         body.enabled = true;
         eyes.enabled = true;
         blue.enabled = false;
         flash.enabled = false;
+
+        base.Disable();
     }
 
     private void Eaten()
     {
-        eaten = true;
-        Vector3 newPosition = ghost.home.inside.position;
-        newPosition.z = ghost.transform.position.z;
-        ghost.transform.position = newPosition;
-        ghost.home.Enable(duration);
-
+        CancelInvoke();
+        eaten = true;   
         body.enabled = false;
         eyes.enabled = true;
         blue.enabled = false;
         flash.enabled = false;
+        ghost.movement.speedMultiplier = 2f;
+        ghost.gameObject.layer = LayerMask.NameToLayer("GhostEaten");
     }
 
     private void Flash()
@@ -74,18 +92,40 @@ public class GhostFrightened : GhostBehaviour
 
         if (node != null && enabled)
         {
-            int index = Random.Range(0, node.availableDirections.Count);
-
-            if (node.availableDirections[index] == -ghost.movement.direction && node.availableDirections.Count > 1)
+            if (!eaten)
             {
-                index++;
-                if (index >= node.availableDirections.Count)
-                {
-                    index = 0;
-                }
-            }
+                int index = Random.Range(0, node.availableDirections.Count);
 
-            ghost.movement.SetDirection(node.availableDirections[index]);
+                if (node.availableDirections[index] == -ghost.movement.direction && node.availableDirections.Count > 1)
+                {
+                    index++;
+                    if (index >= node.availableDirections.Count)
+                    {
+                        index = 0;
+                    }
+                }
+
+                ghost.movement.SetDirection(node.availableDirections[index]);
+            }
+            else
+            {
+                Vector2 direction = Vector2.zero;
+                float minDistance = float.MaxValue;
+
+                foreach (Vector2 availableDirection in node.availableDirections)
+                {
+                    Vector3 newPosition = gameObject.transform.position + new Vector3(availableDirection.x, availableDirection.y);
+                    float distance = (ghost.home.outside.position - newPosition).sqrMagnitude;
+
+                    if (distance < minDistance && availableDirection != -ghost.movement.direction && node.availableDirections.Count > 1)
+                    {
+                        direction = availableDirection;
+                        minDistance = distance;
+                    }
+                }
+                ghost.movement.SetDirection(direction);
+            }
+            
         }
     }
 
@@ -93,11 +133,32 @@ public class GhostFrightened : GhostBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Pacman"))
         {
-            if (enabled)
+            if (enabled && !eaten)
             {
-                Eaten();
+                Eaten();                
             }
         }
+    }
+
+    public IEnumerator EnterTransition()
+    {
+        ghost.movement.SetDirection(Vector2.down, true);
+        ghost.movement.enabled = false;
+
+        Vector3 position = transform.position;
+
+        float duration = 0.5f;
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            Vector3 newPosition = Vector3.Lerp(position, ghost.home.inside.position, elapsed / duration);
+            newPosition.z = position.z;
+            ghost.transform.position = newPosition;
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        ghost.home.Enable(1f);
     }
 
 }
