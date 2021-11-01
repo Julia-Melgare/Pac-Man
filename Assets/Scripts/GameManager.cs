@@ -183,7 +183,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         //TODO: play death sfx
         pacman.DeathAnimation();
-        yield return new WaitForSecondsRealtime(1f);
+        yield return new WaitForSecondsRealtime(2f);
         if (lives > 0)
         {
             StartCoroutine(StartReset());
