@@ -30,9 +30,9 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (lives<=0 && Input.anyKeyDown)
+        if (!startedGame && Input.anyKeyDown)
         {
-            NewGame();
+            PressedStartButton();
         }
     }
 
@@ -60,7 +60,6 @@ public class GameManager : MonoBehaviour
 
     private void ResetState()
     {
-        Time.timeScale = 1f;
         ResetGhostMultiplier();
         foreach (Ghost ghost in ghosts)
         {
@@ -129,24 +128,20 @@ public class GameManager : MonoBehaviour
 
     public void PacmanCaught()
     {
-        pacman.gameObject.SetActive(false);
+        Time.timeScale = 0f;
         SetLives(lives - 1);
-        if(lives > 0)
+        foreach (Ghost ghost in ghosts)
         {
-            //Invoke(nameof(ResetState), 3f);
-            //TODO: start death anim coroutine and from there call startreset
-            StartCoroutine(StartReset());
+            ghost.gameObject.SetActive(false);
         }
-        else
-        {
-            GameOver();
-        }
+        StartCoroutine(RoundLost());
     }
 
     public void PressedStartButton()
     {
         if (!startedGame)
         {
+            gameOverText.gameObject.SetActive(false);
             startedGame = true;
             waitingText.gameObject.SetActive(false);
             NewGame();
@@ -173,11 +168,30 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartReset()
     {
+        ResetState();
         Time.timeScale = 0f;
         readyText.gameObject.SetActive(true);
-        //TODO: play sfx
+        //TODO: play ready sfx
         yield return new WaitForSecondsRealtime(4f);//sfx duration
         readyText.gameObject.SetActive(false);
-        ResetState();
+        Time.timeScale = 1f;
+    }
+
+    private IEnumerator RoundLost()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        Time.timeScale = 1f;
+        //TODO: play death sfx
+        pacman.DeathAnimation();
+        yield return new WaitForSecondsRealtime(1f);
+        if (lives > 0)
+        {
+            StartCoroutine(StartReset());
+        }
+        else
+        {
+            GameOver();
+        }
+        
     }
 }
