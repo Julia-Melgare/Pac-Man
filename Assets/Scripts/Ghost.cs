@@ -44,8 +44,7 @@ public class Ghost : MonoBehaviour
             {
                 initialBehavior.Enable();
             }
-        }
-        
+        }        
     }
 
     public void EnablePlayerInput()
@@ -62,7 +61,7 @@ public class Ghost : MonoBehaviour
     {
         if (collision.gameObject.layer == LayerMask.NameToLayer("Pacman"))
         {
-            if (frightened.enabled)
+            if (frightened.enabled && !frightened.eaten)
             {
                 FindObjectOfType<GameManager>().GhostEaten(this);
             }

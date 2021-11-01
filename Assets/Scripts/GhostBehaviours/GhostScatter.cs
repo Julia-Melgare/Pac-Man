@@ -2,9 +2,17 @@ using UnityEngine;
 
 public class GhostScatter : GhostBehaviour
 {
+    public Transform scatterTarget;
+
     private void OnDisable()
     {
         ghost.chase.Enable();
+    }
+
+    public override void Enable(float duration)
+    {
+        ghost.target = scatterTarget;
+        base.Enable(duration);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -13,19 +21,22 @@ public class GhostScatter : GhostBehaviour
 
         if(node != null && enabled && !ghost.frightened.enabled)
         {
-            //TODO: change ghost target to respective scatter target
-            //TODO: change to calculate direction based on target
-            int index = Random.Range(0, node.availableDirections.Count);
-            if (node.availableDirections[index] == -ghost.movement.direction && node.availableDirections.Count > 1)
+            Vector2 direction = Vector2.zero;
+            float minDistance = float.MaxValue;
+
+            foreach (Vector2 availableDirection in node.availableDirections)
             {
-                index++;
-                if (index >= node.availableDirections.Count)
+                Vector3 newPosition = gameObject.transform.position + new Vector3(availableDirection.x, availableDirection.y);
+                float distance = (ghost.target.position - newPosition).sqrMagnitude;
+
+                if (distance < minDistance && availableDirection != -ghost.movement.direction && node.availableDirections.Count > 1)
                 {
-                    index = 0;
+                    direction = availableDirection;
+                    minDistance = distance;
                 }
             }
 
-            ghost.movement.SetDirection(node.availableDirections[index]);
+            ghost.movement.SetDirection(direction);
         }
     }
 }

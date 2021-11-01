@@ -74,22 +74,18 @@ public class GhostFrightened : GhostBehaviour
 
         if (node != null && enabled)
         {
-            Vector2 direction = Vector2.zero;
-            float maxDistance = float.MinValue;
+            int index = Random.Range(0, node.availableDirections.Count);
 
-            foreach (Vector2 availableDirection in node.availableDirections)
+            if (node.availableDirections[index] == -ghost.movement.direction && node.availableDirections.Count > 1)
             {
-                Vector3 newPosition = transform.position + new Vector3(availableDirection.x, availableDirection.y);
-                float distance = (ghost.target.position - newPosition).sqrMagnitude;
-
-                if (distance > maxDistance)
+                index++;
+                if (index >= node.availableDirections.Count)
                 {
-                    direction = availableDirection;
-                    maxDistance = distance;
+                    index = 0;
                 }
             }
 
-            ghost.movement.SetDirection(direction);
+            ghost.movement.SetDirection(node.availableDirections[index]);
         }
     }
 

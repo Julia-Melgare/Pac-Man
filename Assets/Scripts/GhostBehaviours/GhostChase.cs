@@ -2,12 +2,21 @@ using UnityEngine;
 
 public class GhostChase : GhostBehaviour
 {
+    public Pacman pacman;
+    public Transform chaseTarget;
+
     private void OnDisable()
     {
         ghost.scatter.Enable();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public override void Enable(float duration)
+    {
+        ghost.target = chaseTarget;
+        base.Enable(duration);
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         Node node = collision.GetComponent<Node>();
 
@@ -21,7 +30,7 @@ public class GhostChase : GhostBehaviour
                 Vector3 newPosition = gameObject.transform.position + new Vector3(availableDirection.x, availableDirection.y);
                 float distance = (ghost.target.position - newPosition).sqrMagnitude;
 
-                if (distance < minDistance)
+                if (distance < minDistance && availableDirection != -ghost.movement.direction && node.availableDirections.Count > 1)
                 {
                     direction = availableDirection;
                     minDistance = distance;
