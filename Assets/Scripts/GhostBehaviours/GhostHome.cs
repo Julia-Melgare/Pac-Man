@@ -61,25 +61,4 @@ public class GhostHome : GhostBehaviour
         ghost.movement.SetDirection(new Vector2(Random.value < 0.5f ? -1.0f : 1.0f, 0.0f), true);
         ghost.movement.enabled = true;
     }
-
-    public IEnumerator EnterTransition()
-    {
-        ghost.movement.SetDirection(Vector2.down, true);
-        ghost.movement.enabled = false;
-
-        Vector3 position = transform.position;
-
-        float duration = 0.5f;
-        float elapsed = 0.0f;
-
-        while (elapsed < duration)
-        {
-            Vector3 newPosition = Vector3.Lerp(position, inside.position, elapsed / duration);
-            newPosition.z = position.z;
-            ghost.transform.position = newPosition;
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        ghost.movement.enabled = true;
-    }
 }
