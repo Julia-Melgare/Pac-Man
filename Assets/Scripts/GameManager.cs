@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public int ghostMultiplier { get; private set; } = 1;
 
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI bonusScoreText;
     public Image[] livesCounterImages;
     public TextMeshProUGUI waitingText;
     public TextMeshProUGUI readyText;
@@ -124,6 +125,8 @@ public class GameManager : MonoBehaviour
         int points = ghost.points * ghostMultiplier;
         SetScore(score + points);
         ghostMultiplier++;
+        StartCoroutine(GhostEatenAnimation(ghost, points));
+
     }
 
     public void PacmanCaught()
@@ -191,7 +194,21 @@ public class GameManager : MonoBehaviour
         else
         {
             GameOver();
-        }
-        
+        }        
+    }
+
+    private IEnumerator GhostEatenAnimation(Ghost ghost, int points)
+    {
+        Time.timeScale = 0f;
+        //TODO: play sfx
+        pacman.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+        bonusScoreText.text = points.ToString();
+        bonusScoreText.transform.position = Camera.main.WorldToScreenPoint(ghost.gameObject.transform.position + Vector3.left);
+        bonusScoreText.gameObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(0.5f);
+        bonusScoreText.gameObject.SetActive(false);
+        pacman.gameObject.GetComponent<SpriteRenderer>().enabled = true;
+        Time.timeScale = 1f;
+
     }
 }

@@ -19,7 +19,7 @@ public class Ghost : MonoBehaviour
         home = GetComponent<GhostHome>();
         scatter = GetComponent<GhostScatter>();
         chase = GetComponent<GhostChase>();
-        frightened = GetComponent<GhostFrightened>();
+        frightened = GetComponent<GhostFrightenedAI>();
     }
 
     private void Start()
@@ -53,8 +53,10 @@ public class Ghost : MonoBehaviour
         Destroy(home);
         Destroy(scatter);
         Destroy(chase);
+        frightened = gameObject.GetComponent<GhostFrightenedPlayer>();
         gameObject.GetComponent<PlayerInput>().enabled = true;
         playerControl = true;
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Ghost"), LayerMask.NameToLayer("Door"), true);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

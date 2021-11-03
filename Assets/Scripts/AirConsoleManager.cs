@@ -42,17 +42,21 @@ public class AirConsoleManager : MonoBehaviour
         {
             players.Add(deviceID, gameManager.pacman.GetComponent<PacmanPlayerInput>());
         }
-        else
+        else if(players.Count <5)
         {
             Ghost playerGhost = gameManager.ghosts[players.Count - 1];
             playerGhost.EnablePlayerInput();
             players.Add(deviceID, playerGhost.GetComponent<PlayerInput>());
         }
+        else
+        {
+            Debug.Log("Maximum number of players reached");
+            return;
+        }
     }
 
     void OnMessage(int from, JToken data)
     {
-        Debug.Log("message: " + data);
         if (players.ContainsKey(from) && data["element"] != null)
         {
             if(data["element"].ToString() == "dpad")
