@@ -21,10 +21,13 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI readyText;
     public TextMeshProUGUI gameOverText;
 
+    public AudioManager audioManager { get; private set; }
+
     public bool startedGame { get; private set; } = false;
 
     private void Start()
     {
+        audioManager = AudioManager.instance;
         waitingText.gameObject.SetActive(true);
         Time.timeScale = 0f;
     }
@@ -56,11 +59,11 @@ public class GameManager : MonoBehaviour
         }
 
         StartCoroutine(StartReset());
-        
     }
 
     private void ResetState()
     {
+        audioManager.backgroundSource.Stop();
         ResetGhostMultiplier();
         foreach (Ghost ghost in ghosts)
         {
@@ -115,9 +118,10 @@ public class GameManager : MonoBehaviour
             ghost.frightened.Enable(pellet.duration);
         }
         PelletEaten(pellet);
+        audioManager.PlayBackgroundNoise(audioManager.powerPelletClip);
         CancelInvoke();
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);
-
+        Invoke(nameof(ResetBackgroundNoise), pellet.duration);
     }
 
     public void GhostEaten(Ghost ghost)
@@ -131,6 +135,7 @@ public class GameManager : MonoBehaviour
 
     public void PacmanCaught()
     {
+        CancelInvoke();
         Time.timeScale = 0f;
         SetLives(lives - 1);
         foreach (Ghost ghost in ghosts)
@@ -169,24 +174,32 @@ public class GameManager : MonoBehaviour
         ghostMultiplier = 1;
     }
 
+    private void ResetBackgroundNoise()
+    {
+        audioManager.PlayBackgroundNoise(audioManager.sirenClip);
+    }
+
     private IEnumerator StartReset()
     {
+        CancelInvoke();
         ResetState();
         Time.timeScale = 0f;
         readyText.gameObject.SetActive(true);
-        //TODO: play ready sfx
-        yield return new WaitForSecondsRealtime(4f);//sfx duration
+        audioManager.PlaySoundEffect(audioManager.gameStartClip);
+        yield return new WaitForSecondsRealtime(4f);
         readyText.gameObject.SetActive(false);
         Time.timeScale = 1f;
+        ResetBackgroundNoise();
     }
 
     private IEnumerator RoundLost()
     {
+        audioManager.backgroundSource.Stop();
         yield return new WaitForSecondsRealtime(1f);
         Time.timeScale = 1f;
-        //TODO: play death sfx
+        audioManager.PlaySoundEffect(audioManager.pacmanDeathClip);
         pacman.DeathAnimation();
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(3f);
         if (lives > 0)
         {
             StartCoroutine(StartReset());
@@ -209,6 +222,5 @@ public class GameManager : MonoBehaviour
         bonusScoreText.gameObject.SetActive(false);
         pacman.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         Time.timeScale = 1f;
-
     }
 }
