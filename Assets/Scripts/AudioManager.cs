@@ -9,6 +9,11 @@ public class AudioManager : MonoBehaviour
     public AudioClip pacmanDeathClip;
     public AudioClip sirenClip;
     public AudioClip powerPelletClip;
+    public AudioClip munchClip;
+    public AudioClip eatGhostClip;
+    public AudioClip ghostRetreatingClip;
+
+    public AudioClip previousClip { get; private set; }
 
     public static AudioManager instance = null;
 
@@ -31,6 +36,10 @@ public class AudioManager : MonoBehaviour
 
     public void PlayBackgroundNoise(AudioClip clip)
     {
+        if (backgroundSource.clip != clip)
+        {
+            previousClip = backgroundSource.clip;
+        }        
         backgroundSource.clip = clip;
         backgroundSource.Play();
     }

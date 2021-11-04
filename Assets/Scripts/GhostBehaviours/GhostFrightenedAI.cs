@@ -8,10 +8,9 @@ public class GhostFrightenedAI : GhostFrightened
         if (eaten)
         {
             float distanceHome = Vector3.Distance(ghost.transform.position, ghost.home.outside.position);
-            Debug.Log(gameObject.name + " - distance to home: " + distanceHome);
             if(distanceHome <= 1.05f)
             {
-                Debug.Log(gameObject.name + " arrived home");
+                AudioManager.instance.PlayBackgroundNoise(AudioManager.instance.previousClip);
                 StartCoroutine(EnterTransition());
                 Disable();                
             }

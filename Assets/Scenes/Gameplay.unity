@@ -161,6 +161,9 @@ MonoBehaviour:
   pacmanDeathClip: {fileID: 8300000, guid: 89f01001bf98fc644be53f947be66643, type: 3}
   sirenClip: {fileID: 8300000, guid: 9a4e265a0198e544ea19e9f39b50b014, type: 3}
   powerPelletClip: {fileID: 8300000, guid: 215ac825d913fae44b895a57534891c7, type: 3}
+  munchClip: {fileID: 8300000, guid: 124c0f775ab06834db3cdfa8017d1295, type: 3}
+  eatGhostClip: {fileID: 8300000, guid: 17462ed1b6942c24a991350e0f80bf8f, type: 3}
+  ghostRetreatingClip: {fileID: 8300000, guid: 12ee72b7b02871c4abf3f7858e936c48, type: 3}
 --- !u!82 &13648523
 AudioSource:
   m_ObjectHideFlags: 0

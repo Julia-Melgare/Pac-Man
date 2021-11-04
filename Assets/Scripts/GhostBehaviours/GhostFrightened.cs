@@ -29,7 +29,6 @@ public abstract class GhostFrightened : GhostBehaviour
         eyes.enabled = true;
         blue.enabled = false;
         flash.enabled = false;
-
         base.Disable();
     }
 

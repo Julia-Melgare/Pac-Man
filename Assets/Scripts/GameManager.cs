@@ -104,6 +104,11 @@ public class GameManager : MonoBehaviour
         pellet.gameObject.SetActive(false);
         SetScore(score + pellet.points);
 
+        if (!audioManager.effectsSource.isPlaying)
+        {
+            audioManager.PlaySoundEffect(audioManager.munchClip);
+        }
+
         if (!HasRemainingPellets())
         {
             pacman.gameObject.SetActive(false);
@@ -115,7 +120,10 @@ public class GameManager : MonoBehaviour
     {
         foreach(Ghost ghost in ghosts)
         {
-            ghost.frightened.Enable(pellet.duration);
+            if (!ghost.frightened.eaten)
+            {
+                ghost.frightened.Enable(pellet.duration);
+            }            
         }
         PelletEaten(pellet);
         audioManager.PlayBackgroundNoise(audioManager.powerPelletClip);
@@ -130,7 +138,6 @@ public class GameManager : MonoBehaviour
         SetScore(score + points);
         ghostMultiplier++;
         StartCoroutine(GhostEatenAnimation(ghost, points));
-
     }
 
     public void PacmanCaught()
@@ -213,14 +220,16 @@ public class GameManager : MonoBehaviour
     private IEnumerator GhostEatenAnimation(Ghost ghost, int points)
     {
         Time.timeScale = 0f;
-        //TODO: play sfx
+        audioManager.backgroundSource.Stop();
+        audioManager.PlaySoundEffect(audioManager.eatGhostClip);
         pacman.gameObject.GetComponent<SpriteRenderer>().enabled = false;
         bonusScoreText.text = points.ToString();
         bonusScoreText.transform.position = Camera.main.WorldToScreenPoint(ghost.gameObject.transform.position + Vector3.left);
         bonusScoreText.gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(1f);
         bonusScoreText.gameObject.SetActive(false);
         pacman.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         Time.timeScale = 1f;
+        audioManager.PlayBackgroundNoise(audioManager.ghostRetreatingClip);
     }
 }

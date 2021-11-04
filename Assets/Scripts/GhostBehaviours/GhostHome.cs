@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class GhostHome : GhostBehaviour
 {
-    //TODO: change initial home duration to amount of pellets eaten
     public Transform inside;
     public Transform outside;
 
