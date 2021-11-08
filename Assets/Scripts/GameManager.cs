@@ -8,11 +8,14 @@ public class GameManager : MonoBehaviour
     public Ghost[] ghosts;
     public Pacman pacman;
     public Transform pellets;
+    public GameObject fruitPrefab;
 
     public int score { get; private set; }
     public int lives { get; private set; }
 
     public int ghostMultiplier { get; private set; } = 1;
+
+    private int pelletsEaten = 0;
 
     public AnimationManager animationManager;
     public AudioClip gameStartClip;
@@ -46,6 +49,7 @@ public class GameManager : MonoBehaviour
         {
             pellet.gameObject.SetActive(true);
         }
+        pelletsEaten = 0;
 
         StartCoroutine(StartReset());
     }
@@ -89,10 +93,15 @@ public class GameManager : MonoBehaviour
     {
         pellet.gameObject.SetActive(false);
         SetScore(score + pellet.points);
+        pelletsEaten++;
         if (!HasRemainingPellets())
         {
             pacman.gameObject.SetActive(false);
             Invoke(nameof(NewRound), 4f);
+        }
+        else if (pelletsEaten == 70 || pelletsEaten == 170) //fruits spawn when 70 pellets and 170 pellets have been eaten
+        {
+            StartCoroutine(SpawnFruit());
         }
     }
 
@@ -202,5 +211,14 @@ public class GameManager : MonoBehaviour
         {
             GameOver();
         }        
+    }
+
+    private IEnumerator SpawnFruit()
+    {
+        GameObject fruit = Instantiate(fruitPrefab);
+        //TODO: change parameters according to level
+        fruit.SetActive(true);
+        yield return new WaitForSeconds(Random.Range(9f, 10f)); //fruits stay active from 9 to 10 seconds
+        fruit.SetActive(false);
     }
 }
