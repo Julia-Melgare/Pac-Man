@@ -10,7 +10,7 @@ public class GhostFrightenedAI : GhostFrightened
             float distanceHome = Vector3.Distance(ghost.transform.position, ghost.home.outside.position);
             if(distanceHome <= 1.05f)
             {
-                AudioManager.instance.PlayBackgroundNoise(AudioManager.instance.previousClip);
+                AudioManager.instance.PlayBackgroundNoise(ghost.sirenClip);
                 StartCoroutine(EnterTransition());
                 Disable();                
             }

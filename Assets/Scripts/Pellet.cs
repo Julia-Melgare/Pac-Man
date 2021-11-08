@@ -3,9 +3,14 @@ using UnityEngine;
 public class Pellet : MonoBehaviour
 {
     public int points = 10;
+    public AudioClip eatPelletClip;
 
     protected virtual void Eat()
     {
+        if (!AudioManager.instance.effectsSource.isPlaying)
+        {
+            AudioManager.instance.PlaySoundEffect(eatPelletClip);
+        }
         FindObjectOfType<GameManager>().PelletEaten(this);
     }
 

@@ -124,3 +124,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   points: 50
+  eatPelletClip: {fileID: 8300000, guid: 215ac825d913fae44b895a57534891c7, type: 3}
+  duration: 8

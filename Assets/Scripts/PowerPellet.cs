@@ -6,6 +6,7 @@ public class PowerPellet : Pellet
 
     protected override void Eat()
     {
+        AudioManager.instance.PlayBackgroundNoise(eatPelletClip);
         FindObjectOfType<GameManager>().PowerPelletEaten(this);
     }
 }

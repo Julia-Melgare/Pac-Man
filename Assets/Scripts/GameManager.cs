@@ -14,21 +14,13 @@ public class GameManager : MonoBehaviour
 
     public int ghostMultiplier { get; private set; } = 1;
 
-    public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI bonusScoreText;
-    public Image[] livesCounterImages;
-    public TextMeshProUGUI waitingText;
-    public TextMeshProUGUI readyText;
-    public TextMeshProUGUI gameOverText;
-
-    public AudioManager audioManager { get; private set; }
+    public AnimationManager animationManager;
+    public AudioClip gameStartClip;
 
     public bool startedGame { get; private set; } = false;
 
     private void Start()
     {
-        audioManager = AudioManager.instance;
-        waitingText.gameObject.SetActive(true);
         Time.timeScale = 0f;
     }
 
@@ -44,10 +36,7 @@ public class GameManager : MonoBehaviour
     {
         SetScore(0);
         SetLives(3);
-        for(int i = 0; i < livesCounterImages.Length; i++)
-        {
-            livesCounterImages[i].enabled = true;
-        }
+        animationManager.ResetLivesCounter();
         NewRound();
     }
 
@@ -63,7 +52,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetState()
     {
-        audioManager.backgroundSource.Stop();
+        AudioManager.instance.backgroundSource.Stop();
         ResetGhostMultiplier();
         foreach (Ghost ghost in ghosts)
         {
@@ -80,35 +69,26 @@ public class GameManager : MonoBehaviour
             ghost.gameObject.SetActive(false);
         }
         pacman.gameObject.SetActive(false);
-        gameOverText.gameObject.SetActive(true);
+        animationManager.gameOverText.gameObject.SetActive(true);
         startedGame = false;
     }
 
     private void SetScore(int score)
     {
         this.score = score;
-        scoreText.text = score.ToString();
+        animationManager.SetScoreUI(score.ToString());
     }
 
     private void SetLives(int lives)
     {
         this.lives = lives;
-        if(lives < 3 && lives > 0)
-        {
-            livesCounterImages[livesCounterImages.Length - lives].enabled = false;
-        }
+        animationManager.UpdateLivesCounter(lives);
     }
 
     public void PelletEaten(Pellet pellet)
     {
         pellet.gameObject.SetActive(false);
         SetScore(score + pellet.points);
-
-        if (!audioManager.effectsSource.isPlaying)
-        {
-            audioManager.PlaySoundEffect(audioManager.munchClip);
-        }
-
         if (!HasRemainingPellets())
         {
             pacman.gameObject.SetActive(false);
@@ -126,7 +106,6 @@ public class GameManager : MonoBehaviour
             }            
         }
         PelletEaten(pellet);
-        audioManager.PlayBackgroundNoise(audioManager.powerPelletClip);
         CancelInvoke();
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);
         Invoke(nameof(ResetBackgroundNoise), pellet.duration);
@@ -136,8 +115,16 @@ public class GameManager : MonoBehaviour
     {
         int points = ghost.points * ghostMultiplier;
         SetScore(score + points);
-        ghostMultiplier++;
-        StartCoroutine(GhostEatenAnimation(ghost, points));
+        ghostMultiplier*=2;
+        StartCoroutine(animationManager.GhostEatenAnimation(ghost, points));
+    }
+
+    public void FruitEaten(Fruit fruit)
+    {
+        fruit.gameObject.SetActive(false);
+        SetScore(score + fruit.points);
+        StartCoroutine(animationManager.FruitEatenAnimation(fruit));
+
     }
 
     public void PacmanCaught()
@@ -156,9 +143,9 @@ public class GameManager : MonoBehaviour
     {
         if (!startedGame)
         {
-            gameOverText.gameObject.SetActive(false);
+            animationManager.gameOverText.gameObject.SetActive(false);
             startedGame = true;
-            waitingText.gameObject.SetActive(false);
+            animationManager.waitingText.gameObject.SetActive(false);
             NewGame();
         }
     }
@@ -183,7 +170,7 @@ public class GameManager : MonoBehaviour
 
     private void ResetBackgroundNoise()
     {
-        audioManager.PlayBackgroundNoise(audioManager.sirenClip);
+        AudioManager.instance.PlayBackgroundNoise(ghosts[0].sirenClip);
     }
 
     private IEnumerator StartReset()
@@ -191,20 +178,20 @@ public class GameManager : MonoBehaviour
         CancelInvoke();
         ResetState();
         Time.timeScale = 0f;
-        readyText.gameObject.SetActive(true);
-        audioManager.PlaySoundEffect(audioManager.gameStartClip);
+        animationManager.readyText.gameObject.SetActive(true);
+        AudioManager.instance.PlaySoundEffect(gameStartClip);
         yield return new WaitForSecondsRealtime(4f);
-        readyText.gameObject.SetActive(false);
+        animationManager.readyText.gameObject.SetActive(false);
         Time.timeScale = 1f;
         ResetBackgroundNoise();
     }
 
     private IEnumerator RoundLost()
     {
-        audioManager.backgroundSource.Stop();
+        AudioManager.instance.backgroundSource.Stop();
         yield return new WaitForSecondsRealtime(1f);
         Time.timeScale = 1f;
-        audioManager.PlaySoundEffect(audioManager.pacmanDeathClip);
+        AudioManager.instance.PlaySoundEffect(pacman.pacmanDeathClip);
         pacman.DeathAnimation();
         yield return new WaitForSecondsRealtime(3f);
         if (lives > 0)
@@ -215,21 +202,5 @@ public class GameManager : MonoBehaviour
         {
             GameOver();
         }        
-    }
-
-    private IEnumerator GhostEatenAnimation(Ghost ghost, int points)
-    {
-        Time.timeScale = 0f;
-        audioManager.backgroundSource.Stop();
-        audioManager.PlaySoundEffect(audioManager.eatGhostClip);
-        pacman.gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        bonusScoreText.text = points.ToString();
-        bonusScoreText.transform.position = Camera.main.WorldToScreenPoint(ghost.gameObject.transform.position + Vector3.left);
-        bonusScoreText.gameObject.SetActive(true);
-        yield return new WaitForSecondsRealtime(1f);
-        bonusScoreText.gameObject.SetActive(false);
-        pacman.gameObject.GetComponent<SpriteRenderer>().enabled = true;
-        Time.timeScale = 1f;
-        audioManager.PlayBackgroundNoise(audioManager.ghostRetreatingClip);
     }
 }

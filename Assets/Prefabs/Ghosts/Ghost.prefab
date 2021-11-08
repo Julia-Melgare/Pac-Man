@@ -399,6 +399,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialBehavior: {fileID: 0}
   target: {fileID: 0}
+  eatGhostClip: {fileID: 8300000, guid: 17462ed1b6942c24a991350e0f80bf8f, type: 3}
+  sirenClip: {fileID: 8300000, guid: 9a4e265a0198e544ea19e9f39b50b014, type: 3}
+  ghostRetreatingClip: {fileID: 8300000, guid: 12ee72b7b02871c4abf3f7858e936c48, type: 3}
   points: 200
 --- !u!114 &8983901840189460418
 MonoBehaviour:
@@ -431,6 +434,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 20
+  pacman: {fileID: 0}
+  chaseTarget: {fileID: 0}
 --- !u!114 &1118421611993768189
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,6 +481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   duration: 7
+  scatterTarget: {fileID: 0}
 --- !u!114 &8983901840189460417
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,6 +11,10 @@ public class Ghost : MonoBehaviour
     public Transform target;
     public bool playerControl { get; private set; } = false;
 
+    public AudioClip eatGhostClip;
+    public AudioClip sirenClip;
+    public AudioClip ghostRetreatingClip;
+
     public int points = 200;
 
     private void Awake()
