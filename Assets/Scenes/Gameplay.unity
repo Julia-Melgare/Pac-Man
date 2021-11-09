@@ -1543,6 +1543,7 @@ GameObject:
   m_Component:
   - component: {fileID: 757871868}
   - component: {fileID: 757871869}
+  - component: {fileID: 757871870}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1587,6 +1588,27 @@ MonoBehaviour:
     type: 3}
   animationManager: {fileID: 910580136}
   gameStartClip: {fileID: 8300000, guid: 2e9d486a4479a8a40806804381357477, type: 3}
+--- !u!114 &757871870
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 757871867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37794e3281179c478f982343f408ae1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fruitSprites:
+  - {fileID: 21300000, guid: be1c3a3dd4430f944b4d15bdef66c3a3, type: 3}
+  - {fileID: 21300000, guid: f6f788759ad0c9f4e833a2bcb39183b7, type: 3}
+  - {fileID: 21300000, guid: b01a8b76c5b63004ead9b7eca851a02e, type: 3}
+  - {fileID: 21300000, guid: 07cd50f3af75bbd4aaf458abf9bdc0d6, type: 3}
+  - {fileID: 21300000, guid: 27ed9bc6192ae3948a73a2c59400ff75, type: 3}
+  - {fileID: 21300000, guid: cf4bf09f851498e4c8a452ed612944bd, type: 3}
+  - {fileID: 21300000, guid: b0c77cf1671894c45895f9c1cc0e6e19, type: 3}
+  - {fileID: 21300000, guid: 35b34e7d16b49bf4389b9533f288c614, type: 3}
 --- !u!212 &798853465 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 7851732085079629570, guid: 6ee65e9c4deca554aa64dfcfeade3d8f,
