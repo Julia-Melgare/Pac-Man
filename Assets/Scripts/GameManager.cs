@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f;
     }
 
+#if UNITY_EDITOR || UNITY_STANDALONE
     private void Update()
     {
         if (!startedGame && Input.anyKeyDown)
@@ -37,6 +38,7 @@ public class GameManager : MonoBehaviour
             PressedStartButton();
         }
     }
+#endif
 
     private void NewGame()
     {

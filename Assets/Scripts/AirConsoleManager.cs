@@ -11,12 +11,18 @@ public class AirConsoleManager : MonoBehaviour
 
     void Awake()
     {
+        #if UNITY_EDITOR || UNITY_WEBGL
         AirConsole.instance.onMessage += OnMessage;
         AirConsole.instance.onReady += OnReady;
         AirConsole.instance.onConnect += OnConnect;
         gameManager = FindObjectOfType<GameManager>();
+        #else
+        Destroy(AirConsole.instance.gameObject);
+        Destroy(this.gameObject);
+        #endif
     }
 
+#if UNITY_EDITOR || UNITY_WEBGL
     void OnReady(string code)
     { 
         List<int> connectedDevices = AirConsole.instance.GetControllerDeviceIds();
@@ -85,5 +91,6 @@ public class AirConsoleManager : MonoBehaviour
             AirConsole.instance.onConnect -= OnConnect;
         }
     }
+#endif
 }
 

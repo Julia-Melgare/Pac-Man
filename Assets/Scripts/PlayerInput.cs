@@ -10,8 +10,10 @@ public class PlayerInput : MonoBehaviour
     {
         movement = gameObject.GetComponent<Movement>();
     }
+
     protected virtual void Update()
     {
+        #if UNITY_EDITOR || UNITY_STANDALONE
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
             movement.SetDirection(Vector2.up);
@@ -28,8 +30,10 @@ public class PlayerInput : MonoBehaviour
         {
             movement.SetDirection(Vector2.right);
         }
+        #endif
     }
 
+#if UNITY_EDITOR || UNITY_WEBGL
     public virtual void ButtonInput(string input)
     {
         switch (input)
@@ -48,4 +52,5 @@ public class PlayerInput : MonoBehaviour
                 break;
         }
     }
+#endif
 }
