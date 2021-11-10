@@ -7,16 +7,22 @@ public class AnimationManager : MonoBehaviour
 {
     public Pacman pacman;
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI highScoreText;
+    public TextMeshProUGUI levelText;
     public TextMeshProUGUI bonusScoreText;
     public TextMeshProUGUI fruitScoreText;
     public Image[] livesCounterImages;
+    public Image[] levelCounterImages;
     public TextMeshProUGUI waitingText;
     public TextMeshProUGUI readyText;
     public TextMeshProUGUI gameOverText;
 
+    private int levelCounterImagesIndex = 0;
+
     private void Start()
     {
         waitingText.gameObject.SetActive(true);
+        UpdateHighScoreUI();
     }
 
     public void ResetLivesCounter()
@@ -34,10 +40,38 @@ public class AnimationManager : MonoBehaviour
 
     public void UpdateLivesCounter(int lives)
     {
-        if (lives < 3 && lives > 0)
+        if (lives <= livesCounterImages.Length && lives > 0)
         {
             livesCounterImages[livesCounterImages.Length - lives].enabled = false;
         }
+    }
+
+    public void NextLevel()
+    {
+        levelText.text = LevelManager.instance.level.ToString();
+        levelCounterImages[levelCounterImagesIndex].sprite = LevelManager.instance.fruitSprite;
+        levelCounterImages[levelCounterImagesIndex].gameObject.SetActive(true);
+        levelCounterImagesIndex++;
+        if(levelCounterImagesIndex >= levelCounterImages.Length)
+        {
+            levelCounterImagesIndex = 0;
+        }
+    }
+
+    public void ResetState()
+    {
+        for (int i = 0; i < levelCounterImages.Length; i++)
+        {
+            levelCounterImages[i].gameObject.SetActive(false);
+            levelCounterImages[i].sprite = null;
+        }
+        levelCounterImagesIndex = 0;
+        UpdateHighScoreUI();
+    }
+
+    public void UpdateHighScoreUI()
+    {
+        highScoreText.text = PlayerPrefs.GetInt("highscore").ToString();
     }
 
     public IEnumerator GhostEatenAnimation(Ghost ghost, int points)

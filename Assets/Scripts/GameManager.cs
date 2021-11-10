@@ -9,9 +9,11 @@ public class GameManager : MonoBehaviour
     public Pacman pacman;
     public Transform pellets;
     public GameObject fruitPrefab;
+    private GameObject fruit;
 
     public int score { get; private set; }
     public int lives { get; private set; }
+    public int highScore { get; private set; }
 
     public int ghostMultiplier { get; private set; } = 1;
 
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     public AnimationManager animationManager;
     public AudioClip gameStartClip;
+    public AudioClip levelWinClip;
 
     public bool startedGame { get; private set; } = false;
 
@@ -38,8 +41,10 @@ public class GameManager : MonoBehaviour
     private void NewGame()
     {
         SetScore(0);
-        SetLives(3);
+        SetLives(6);
         animationManager.ResetLivesCounter();
+        LevelManager.instance.ResetState();
+        animationManager.ResetState();
         NewRound();
     }
 
@@ -50,19 +55,22 @@ public class GameManager : MonoBehaviour
             pellet.gameObject.SetActive(true);
         }
         pelletsEaten = 0;
-
+        LevelManager.instance.NextLevel();
+        animationManager.NextLevel();
+        SetPacmanLevelParameters();
+        SetGhostsLevelParameters();
         StartCoroutine(StartReset());
     }
 
     private void ResetState()
     {
         AudioManager.instance.backgroundSource.Stop();
+        if (fruit != null) Destroy(fruit);
         ResetGhostMultiplier();
         foreach (Ghost ghost in ghosts)
         {
             ghost.ResetState();
         }
-
         pacman.ResetState();
     }
 
@@ -81,12 +89,27 @@ public class GameManager : MonoBehaviour
     {
         this.score = score;
         animationManager.SetScoreUI(score.ToString());
+        SaveHighScore();
     }
 
     private void SetLives(int lives)
     {
         this.lives = lives;
         animationManager.UpdateLivesCounter(lives);
+    }
+
+    private void SetPacmanLevelParameters()
+    {
+        pacman.movement.speed = LevelManager.instance.pacmanSpeed;
+        pacman.movement.speedMultiplier = 1f;
+    }
+
+    private void SetGhostsLevelParameters()
+    {
+        foreach (Ghost ghost in ghosts)
+        {
+            ghost.movement.speed = LevelManager.instance.ghostsSpeed;
+        }
     }
 
     public void PelletEaten(Pellet pellet)
@@ -96,8 +119,7 @@ public class GameManager : MonoBehaviour
         pelletsEaten++;
         if (!HasRemainingPellets())
         {
-            pacman.gameObject.SetActive(false);
-            Invoke(nameof(NewRound), 4f);
+            StartCoroutine(RoundWon());
         }
         else if (pelletsEaten == 70 || pelletsEaten == 170) //fruits spawn when 70 pellets and 170 pellets have been eaten
         {
@@ -107,7 +129,8 @@ public class GameManager : MonoBehaviour
 
     public void PowerPelletEaten(PowerPellet pellet)
     {
-        foreach(Ghost ghost in ghosts)
+        pellet.duration = LevelManager.instance.frightDuration;
+        foreach (Ghost ghost in ghosts)
         {
             if (!ghost.frightened.eaten)
             {
@@ -115,9 +138,11 @@ public class GameManager : MonoBehaviour
             }            
         }
         PelletEaten(pellet);
+        pacman.movement.speedMultiplier = LevelManager.instance.frightPacmanSpeed / LevelManager.instance.pacmanSpeed;
         CancelInvoke();
         Invoke(nameof(ResetGhostMultiplier), pellet.duration);
         Invoke(nameof(ResetBackgroundNoise), pellet.duration);
+        Invoke(nameof(SetPacmanLevelParameters), pellet.duration);
     }
 
     public void GhostEaten(Ghost ghost)
@@ -172,6 +197,15 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    private void SaveHighScore()
+    {
+        if(score >= PlayerPrefs.GetInt("highscore"))
+        {
+            PlayerPrefs.SetInt("highscore", score);
+            animationManager.UpdateHighScoreUI();
+        }
+    }
+
     private void ResetGhostMultiplier()
     {
         ghostMultiplier = 1;
@@ -213,12 +247,29 @@ public class GameManager : MonoBehaviour
         }        
     }
 
+    private IEnumerator RoundWon()
+    {
+        Time.timeScale = 0f;
+        AudioManager.instance.backgroundSource.Stop();
+        pacman.gameObject.SetActive(false);
+        foreach (Ghost ghost in ghosts)
+        {
+            ghost.gameObject.SetActive(false);
+        }
+        yield return new WaitForSecondsRealtime(1f);
+        AudioManager.instance.backgroundSource.PlayOneShot(levelWinClip);
+        yield return new WaitForSecondsRealtime(3f);
+        Time.timeScale = 1f;
+        NewRound();
+    }
+
     private IEnumerator SpawnFruit()
     {
-        GameObject fruit = Instantiate(fruitPrefab);
-        //TODO: change parameters according to level
+        fruit = Instantiate(fruitPrefab);
+        fruit.GetComponent<SpriteRenderer>().sprite = LevelManager.instance.fruitSprite;
+        fruit.GetComponent<Fruit>().points = LevelManager.instance.fruitPoints;
         fruit.SetActive(true);
         yield return new WaitForSeconds(Random.Range(9f, 10f)); //fruits stay active from 9 to 10 seconds
-        fruit.SetActive(false);
+        if(fruit != null) fruit.SetActive(false);
     }
 }
